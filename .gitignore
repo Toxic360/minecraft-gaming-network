@@ -1,0 +1,34 @@
+# Minecraft-Server – wat ignoriert wird
+
+# Server selbst (heruntergeladen, nicht committen)
+server.jar
+eula.txt
+launch.jar
+
+# Weltdaten (sehr groß, schnell wachsend, komprimierbare Backups)
+server/world/
+server/world_nbt/
+build/                 # itzg/docker build-Artefakte
+
+# Plugins (laut Backup-Strategie nur via backup/)
+server/plugins/downloads/
+
+# Logs & temporär
+server/logs/*.log
+server/logs/
+*.log
+tmp/
+*.tmp
+crash-reports/
+
+# Backup-Archive (liegen lokal, nur der .sh-Script wird gepusht)
+backup/backups/*.tar.gz
+backup/backups/*.zip
+
+# VCS
+.git/
+
+# Docker / ITZG
+Dockerfile
+docker-compose.yml
+eitc.env
