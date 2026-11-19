@@ -1,0 +1,179 @@
+# Gaming Netzwerk — Minecraft Crossplay Server
+# Start: docker compose up -d  (nach ./setup.sh)
+# Minispiele optional: docker compose --profile minigames up -d
+
+services:
+  mariadb:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: luckperms
+      MARIADB_USER: luckperms
+      MARIADB_PASSWORD: ${LP_DB_PASSWORD}
+      MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    mem_limit: 384m
+
+  proxy:
+    image: itzg/mc-proxy
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    environment:
+      TYPE: VELOCITY
+      VELOCITY_VERSION: "4.3.1"
+      MEMORY: 512M
+      PLUGINS_FILE: /extras/plugins.txt
+    ports:
+      - "25565:25565/tcp"   # Java Edition
+      - "19132:19132/tcp"   # Bedrock: NetherNet-Signaling
+      - "19132:19132/udp"   # Bedrock: RakNet (aeltere Clients)
+      - "19133:19133/udp"   # Bedrock: NetherNet WebRTC
+    volumes:
+      - ./velocity/velocity.toml:/config/velocity.toml:ro
+      - ./velocity/forwarding.secret:/config/forwarding.secret:ro
+      - ./velocity/plugins.txt:/extras/plugins.txt:ro
+      - ./data/proxy:/server
+    mem_limit: 768m
+
+  lobby:
+    image: itzg/minecraft-server
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      VERSION: "26.1.2"
+      MEMORY: 768M
+      USE_AIKAR_FLAGS: "true"
+      ONLINE_MODE: "FALSE"
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: ${RCON_PASSWORD}
+      SYNC_SKIP_NEWER_IN_DESTINATION: "false"
+      LEVEL: lobby
+      MODE: adventure
+      DIFFICULTY: peaceful
+      SPAWN_PROTECTION: "0"
+      VIEW_DISTANCE: "6"
+      MAX_PLAYERS: "100"
+      MOTD: "Lobby"
+      MODRINTH_PROJECTS: "luckperms,essentialsx,deluxemenus,placeholderapi"
+      PLUGINS_FILE: /extras/plugins.txt
+    volumes:
+      - ./servers/lobby/paper-global.yml:/config/paper-global.yml:ro
+      - ./rendered/luckperms-config.yml:/plugins/LuckPerms/config.yml:ro
+      - ./servers/lobby/plugins.txt:/extras/plugins.txt:ro
+      - ./data/lobby:/data
+    mem_limit: 1280m
+
+  freebuild:
+    image: itzg/minecraft-server
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      VERSION: "26.1.2"
+      MEMORY: 1536M
+      USE_AIKAR_FLAGS: "true"
+      ONLINE_MODE: "FALSE"
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: ${RCON_PASSWORD}
+      SYNC_SKIP_NEWER_IN_DESTINATION: "false"
+      LEVEL: freebuild
+      MODE: survival
+      DIFFICULTY: normal
+      SPAWN_PROTECTION: "0"
+      VIEW_DISTANCE: "8"
+      SIMULATION_DISTANCE: "6"
+      MAX_PLAYERS: "100"
+      MOTD: "Freebuild"
+      MODRINTH_PROJECTS: "luckperms,essentialsx,worldedit,worldguard,coreprotect,chunky,grimac,discordsrv"
+      PLUGINS_FILE: /extras/plugins.txt
+    ports:
+      - "8100:8100/tcp"     # BlueMap Webkarte (spaeter hinter Reverse-Proxy)
+    volumes:
+      - ./servers/freebuild/paper-global.yml:/config/paper-global.yml:ro
+      - ./rendered/luckperms-config.yml:/plugins/LuckPerms/config.yml:ro
+      - ./servers/freebuild/plugins.txt:/extras/plugins.txt:ro
+      - ./data/freebuild:/data
+    mem_limit: 2048m
+
+  citybuild:
+    image: itzg/minecraft-server
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      VERSION: "26.1.2"
+      MEMORY: 1536M
+      USE_AIKAR_FLAGS: "true"
+      ONLINE_MODE: "FALSE"
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: ${RCON_PASSWORD}
+      SYNC_SKIP_NEWER_IN_DESTINATION: "false"
+      LEVEL: world
+      MODE: survival
+      DIFFICULTY: easy
+      SPAWN_PROTECTION: "0"
+      GENERATE_STRUCTURES: "false"
+      VIEW_DISTANCE: "8"
+      SIMULATION_DISTANCE: "6"
+      MAX_PLAYERS: "100"
+      MOTD: "Citybuild"
+      MODRINTH_PROJECTS: "luckperms,essentialsx,worldedit,coreprotect,chunky,grimac"
+      SPIGET_PLUGINS: "77506,34315"   # PlotSquared v7, Vault
+      PLUGINS_FILE: /extras/plugins.txt
+    volumes:
+      - ./servers/citybuild/paper-global.yml:/config/paper-global.yml:ro
+      - ./rendered/luckperms-config.yml:/plugins/LuckPerms/config.yml:ro
+      - ./servers/citybuild/plugins.txt:/extras/plugins.txt:ro
+      - ./data/citybuild:/data
+    mem_limit: 2048m
+
+  minigames:
+    image: itzg/minecraft-server
+    restart: unless-stopped
+    profiles: ["minigames"]
+    # ACHTUNG: braucht +2 GB RAM. Auf dem 8-GB-VPS erst nach RAM-Upgrade aktivieren!
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      VERSION: "26.1.2"
+      MEMORY: 2G
+      USE_AIKAR_FLAGS: "true"
+      ONLINE_MODE: "FALSE"
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: ${RCON_PASSWORD}
+      SYNC_SKIP_NEWER_IN_DESTINATION: "false"
+      LEVEL: minigames
+      MODE: adventure
+      DIFFICULTY: peaceful
+      SPAWN_PROTECTION: "0"
+      VIEW_DISTANCE: "6"
+      MAX_PLAYERS: "100"
+      MOTD: "Minispiele"
+      MODRINTH_PROJECTS: "luckperms"
+      PLUGINS_FILE: /extras/plugins.txt
+    volumes:
+      - ./servers/minigames/paper-global.yml:/config/paper-global.yml:ro
+      - ./rendered/luckperms-config.yml:/plugins/LuckPerms/config.yml:ro
+      - ./servers/minigames/plugins.txt:/extras/plugins.txt:ro
+      - ./data/minigames:/data
+    mem_limit: 2560m

@@ -1,0 +1,8 @@
+# Backend-Plugins per URL (Rest kommt automatisch via MODRINTH_PROJECTS)
+https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot
+# ViaVersion/ViaBackwards: neuere (26.2/26.3, auch Geyser) und aeltere Clients.
+# Gepinnt, weil Modrinth sie als "beta" markiert — regelmaessig aktualisieren!
+https://cdn.modrinth.com/data/P1OZGk5p/versions/OKm4Zi14/ViaVersion-5.12.3-SNAPSHOT.jar
+https://cdn.modrinth.com/data/NpvuJQoq/versions/DuSWMuYg/ViaBackwards-5.12.3-SNAPSHOT.jar
+# BlueMap Webkarte (Port 8100):
+https://cdn.modrinth.com/data/swbUV1cr/versions/wIycjaQ7/bluemap-5.29-spigot.jar

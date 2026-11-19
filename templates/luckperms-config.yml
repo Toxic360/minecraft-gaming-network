@@ -1,0 +1,9 @@
+# LuckPerms — gemeinsame Datenbank fuer alle Server (Raenge netzwerkweit).
+# Wird von setup.sh mit dem DB-Passwort gerendert; fehltende Werte = LuckPerms-Defaults.
+storage-method: mysql
+data:
+  address: mariadb:3306
+  database: luckperms
+  username: luckperms
+  password: '__LP_DB_PASSWORD__'
+messaging-service: pluginmsg

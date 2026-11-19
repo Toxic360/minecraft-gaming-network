@@ -1,0 +1,6 @@
+# Proxy-Plugins (werden beim Start automatisch geladen)
+# Geyser: Bedrock-Crossplay, Floodgate: Bedrock-Logins ohne Java-Account
+https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/velocity
+https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/velocity
+# LuckPerms (Velocity) fuer Proxy-Rechte:
+https://cdn.modrinth.com/data/Vebnzrzj/versions/tamnmXad/LuckPerms-Velocity-5.5.71.jar

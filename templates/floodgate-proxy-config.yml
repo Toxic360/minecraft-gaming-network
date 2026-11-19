@@ -1,0 +1,3 @@
+# Floodgate (Proxy) — Teil-Konfiguration; fehlende Werte = Defaults.
+# Sendet Bedrock-Spielerdaten an die Backends (dort liegt dieselbe key.pem).
+send-floodgate-data: true

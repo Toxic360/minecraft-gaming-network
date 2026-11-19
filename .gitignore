@@ -1,0 +1,7 @@
+# Geheimnisse und Laufzeitdaten — niemals committen!
+.env
+velocity/forwarding.secret
+data/
+rendered/
+servers/*/paper-global.yml
+*.log

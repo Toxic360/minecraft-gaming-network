@@ -1,0 +1,51 @@
+# Velocity Proxy — Gaming Netzwerk
+config-version = "2.7"
+
+bind = "0.0.0.0:25565"
+motd = "<#22c55e>Gaming Netzwerk</#22c55e> <dark_gray>»</dark_gray> <gray>Freebuild | Citybuild | Minispiele</gray>"
+show-max-players = 200
+online-mode = true
+# Floodgate (Bedrock-Spieler ohne Java-Account) erfordert false:
+force-key-authentication = false
+prevent-client-proxy-connections = false
+player-info-forwarding-mode = "modern"
+forwarding-secret-file = "forwarding.secret"
+announce-forge = false
+kick-existing-players = false
+ping-passthrough = "DISABLED"
+enable-player-address-logging = true
+
+[servers]
+lobby = "lobby:25565"
+freebuild = "freebuild:25565"
+citybuild = "citybuild:25565"
+minigames = "minigames:25565"
+
+try = [
+    "lobby"
+]
+
+[forced-hosts]
+
+[advanced]
+compression-threshold = 256
+compression-level = -1
+login-ratelimit = 3000
+connection-timeout = 5000
+read-timeout = 30000
+haproxy-protocol = false
+tcp-fast-open = false
+bungee-plugin-message-channel = true
+show-ping-requests = false
+failover-on-unexpected-server-disconnect = true
+announce-proxy-commands = true
+log-command-executions = false
+log-player-connections = true
+accepts-transfers = false
+
+[query]
+# Fuer Server-Status auf der Website spaeter:
+enabled = true
+port = 25565
+map = "Gaming Netzwerk"
+show-plugins = false

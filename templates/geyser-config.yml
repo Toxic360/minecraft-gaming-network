@@ -1,0 +1,18 @@
+# Geyser (Velocity) — Teil-Konfiguration; alle fehlenden Werte = Geyser-Defaults.
+# Crossplay: Bedrock 26.40-26.60, Java 26.3 (Geyser emuliert den Java-Client).
+bedrock:
+  address: 0.0.0.0
+  port: 19132
+  # NetherNet (Bedrock 26.60+) nutzt diesen UDP-Port, RakNet nutzt port/udp:
+  webrtc-port: 19133
+  # "both" = NetherNet UND RakNet, damit alte und neue Bedrock-Clients joinen koennen:
+  transport: both
+  clone-remote-port: false
+  signaling:
+    mode: builtin
+    stun-discovery: true
+    # Spaeter mit echter Domain ersetzen (advertise-addresses):
+    # advertise-addresses:
+    #   - play.example.de
+java:
+  auth-type: floodgate
